@@ -21,6 +21,7 @@ import com.example.videoSegmentation.entity.Video;
 import com.example.videoSegmentation.enums.ExecuteStateEum;
 import com.example.videoSegmentation.service.VideoService;
 
+//@CrossOrigin(origins = {"*","null"}) //用于跨域请求，*代表允许响应所有的跨域请求s
 @RequestMapping("/video")
 @RestController
 public class VideoController {
@@ -31,7 +32,7 @@ public class VideoController {
 
 	@PostMapping("/upload")
 	@ResponseBody
-	public RBody upload(@RequestParam MultipartFile file, @RequestParam String filename) {
+	public RBody upload(@RequestParam(name="video") MultipartFile file, @RequestParam String filename) {
 		// 判断文件
 		if (file == null || file.isEmpty() || filename == null || filename.isEmpty())
 			return RBody.error("文件不存在");

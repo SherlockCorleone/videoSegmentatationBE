@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -40,6 +41,7 @@ public class SceneBoundaryServiceImpl extends ServiceImpl<SceneBoundaryMapper, S
 	String cmd;
 
 	@Override
+	@Transactional
 	public BaseExecution<SceneBoundary> extraSceneBoundary(Integer extraSceneTpye, Integer extraShotTye, Long videoId) {
 		try {
 			// 查找视频
@@ -75,19 +77,31 @@ public class SceneBoundaryServiceImpl extends ServiceImpl<SceneBoundaryMapper, S
 			c1.interrupt();
 			c2.interrupt();
 			String boundaryPath = PathUtil.getBasePath();
+			String shotKeyfPath = PathUtil.getBasePath();
 			if (extraSceneTpye == 1)
 				boundaryPath += "shot_bound/BaSSL";
 			else
 				boundaryPath += "shot_bound/SCRL";
-			if (extraShotTye == 1)
-				boundaryPath += "/traditional/" + video.getVideoName().split("\\.")[0] + ".ndjson";
-			else
-				boundaryPath += "/TransNetV2/" + video.getVideoName().split("\\.")[0] + ".ndjson";
+			String videoName=video.getVideoName().split("\\.")[0];
+			if (extraShotTye == 1) {
+				boundaryPath += "/traditional/" +  videoName + ".json";
+				shotKeyfPath += "shot_keyf/traditional/"+videoName;
+			}
+			else {
+				boundaryPath += "/TransNetV2/" + video.getVideoName().split("\\.")[0] + ".json";
+				shotKeyfPath += "shot_keyf/TransNetV2/"+videoName;
+			}
+				
 			File file = new File(boundaryPath);
 			if (!file.exists() || file.isDirectory()) {
 				throw new BaseExecuteException("提取视频边界失败");
 			}
+			
 			// 更新数据库
+			
+			
+			
+			
 			SceneBoundary sceneBoundary = new SceneBoundary();
 			sceneBoundary.setCreateDate(new Date());
 			sceneBoundary.setSceneBoundaryType(extraSceneTpye);

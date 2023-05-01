@@ -99,21 +99,22 @@ public class SubVideoServiceImpl extends ServiceImpl<SubVideoMapper, SubVideo> i
 				throw new BaseExecuteException("分割视频失败");
 			}
 			List<SubVideo> subVideoList = new ArrayList<SubVideo>();
+			String relativePath []=splitVideoPath.split(":");
 			for (File f : files) {
 				if (!f.isDirectory())
 					subVideoList.add(
-							new SubVideo(f.getName(), videoId, splitVideoPath + "/" + f.getName(), sceneBoundaryId));
+							new SubVideo(f.getName(), videoId, relativePath[relativePath.length-1] + "/" + f.getName(), sceneBoundaryId));
 			}
 			// 更新数据库
 			boolean b = saveBatch(subVideoList);
 			if (!b) {
 				throw new BaseExecuteException("数据库插入失败");
 			}
-			return new BaseExecution<SubVideo>(ExecuteStateEum.SUCCESS, subvideoList);
+			return new BaseExecution<SubVideo>(ExecuteStateEum.SUCCESS, subVideoList);
 		} catch (BaseExecuteException e) {
 			return new BaseExecution<SubVideo>(e.getMessage());
 		} catch (Exception e) {
-			return new BaseExecution<SubVideo>(e.getMessage());
+			return new BaseExecution<SubVideo>("未知错误");
 		}
 	}
 

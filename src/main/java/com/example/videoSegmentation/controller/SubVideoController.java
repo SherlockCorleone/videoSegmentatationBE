@@ -12,7 +12,7 @@ import com.example.videoSegmentation.entity.SubVideo;
 import com.example.videoSegmentation.enums.ExecuteStateEum;
 import com.example.videoSegmentation.service.SubVideoService;
 
-
+//@CrossOrigin(origins = {"*","null"}) //用于跨域请求，*代表允许响应所有的跨域请求s
 @RequestMapping("/subvideo")
 @RestController
 public class SubVideoController {
